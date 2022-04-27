@@ -4,6 +4,7 @@ from torch.utils.data import IterableDataset, get_worker_info
 from torch import as_tensor
 from PIL import Image
 import math
+import os
 
 class PickleSeriesDataset(IterableDataset):
     """A dataset that reads a pickle file and returns its content
@@ -59,6 +60,8 @@ class PickleSeriesDataset(IterableDataset):
     def get_preview_image(self, row):
         img_path = []
         preview = row['preview_path']
+        if preview and preview.startswith('/scraper/data/preview/'):
+            preview = os.path.join(os.sep, 'C:' + os.sep, 'nft_data', 'preview', preview[len('/scraper/data/preview/'):])
         if preview != None and pandas.isna(preview) == False:
             img_path.append(preview)
         

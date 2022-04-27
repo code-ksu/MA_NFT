@@ -1,0 +1,1 @@
+conda activate deep && jupyter notebook src/1_data_insights.ipynb --ip 0.0.0.0
