@@ -14,9 +14,10 @@ class PickleSeriesDataset(IterableDataset):
     """A dataset that reads a pickle file and returns its content
     """
 
-    def __init__(self, x_path, y_path, transform=None):
+    def __init__(self, x_path, y_path, transform=None, return_img=True):
         super(PickleSeriesDataset).__init__()
         self.transform = transform
+        self.return_img=return_img
         pickle_dir = 'D:\\Code\\datascience\\MA_NFT\\data\\pickle\\'
         
         def load_pickle(name):
@@ -68,7 +69,9 @@ class PickleSeriesDataset(IterableDataset):
                 nums = self.get_nums(data)
                 target = torch.tensor(target, dtype=torch.int64)
 
-                if img is not None:
+                if self.return_img is False:
+                    yield cats, nums, target
+                elif img is not None:
                     yield img, cats, nums, target
                 else:
                     path = data['image_path']
@@ -114,6 +117,9 @@ class PickleSeriesDataset(IterableDataset):
         return torch.tensor([row[col] for col in num_col], dtype=torch.float)
 
     def get_preview_image(self, row):
+        if self.return_img is False:
+            return None
+        
         path = row['image_path']
         svg = path.endswith('.svg')
         if path.startswith('..\\..\\opensea_scapper\\opensea_nft_scrapper\\data\\'):
